@@ -3,7 +3,6 @@
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
--export([ceil/1]).
 -define(DEBUG, true).
 -endif.
 
@@ -14,7 +13,7 @@
 -export([rank_average/2]).
 
 -spec quantile(float(), samples()) -> sample().
-quantile(0.0, [First|_]) ->
+quantile(Quantile, [First|_]) when Quantile == 0.0->
 	First;
 
 quantile(1.0, Samples) ->
@@ -54,16 +53,6 @@ ranks(Size, Quantile) ->
 			[ceil(Size * Quantile)]
 	end.
 
--spec ceil(float()) -> integer().
-ceil(X) ->
-    T = erlang:trunc(X),
-    case (X - T) of
-        Neg when Neg < 0 -> T;
-        Pos when Pos > 0 -> T + 1;
-        _ -> T
-    end.
-
-
 % TESTS
 rank_average(Size, Quantile) ->
 	case ranks(Size, Quantile) of
@@ -81,8 +70,7 @@ quantile_test_() ->
 	fun test_setup/0,
 	fun test_teardown/1,
 	[
-		{"test ceil", fun  ceil_test/0}
-		,{"test ranks", fun ranks_test/0}
+		{"test ranks", fun ranks_test/0}
 		,{"test natural", fun natural_test/0}
 		,{"test even", fun even_test/0}
 		,{"test quantiles", fun quantile_test/0}
